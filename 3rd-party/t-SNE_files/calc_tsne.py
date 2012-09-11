@@ -121,7 +121,9 @@ def tSNE():
         cmd='tSNE_linux'
     cmd = os.path.join(TSNE_DIRECTORY, cmd)
     print >> sys.stderr, 'Calling executable "%s"'%cmd
-    os.system(cmd)
+    exit_status = os.system(cmd)
+    assert exit_status == 0, ('Call to tSNE returned with a non-zero exit '
+            "status, perhaps your data won't fit your memory?")
     
 
 def readResult():
