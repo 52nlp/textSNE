@@ -28,6 +28,7 @@ from struct import *
 import sys
 import os
 from numpy import *
+import subprocess
 
 TSNE_DIRECTORY = os.path.dirname(__file__)
 
@@ -121,9 +122,11 @@ def tSNE():
         cmd='tSNE_linux'
     cmd = os.path.join(TSNE_DIRECTORY, cmd)
     print >> sys.stderr, 'Calling executable "%s"'%cmd
-    exit_status = os.system(cmd)
-    assert exit_status == 0, ('Call to tSNE returned with a non-zero exit '
-            "status, perhaps your data won't fit your memory?")
+    # t-SNE is very verbose on stdout, redirect it to stderr
+    tsne_p = subprocess.Popen(cmd, stdout=sys.stderr)
+    tsne_p.wait()
+    assert tsne_p.returncode == 0, ('Call to tSNE returned with a non-zero '
+            "exit status, perhaps your data won't fit your memory?")
     
 
 def readResult():
