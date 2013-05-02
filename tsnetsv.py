@@ -76,7 +76,7 @@ def main(args):
 
     ### And write it all out
     for token, point in izip(toks, normalised_tsne_output):
-        argp.output.write('{}\t{}\t{}\n'.format(token, point[0], point[1]))
+        argp.output.write('{0}\t{1}\t{2}\n'.format(token, point[0], point[1]))
 
     return 0
 
