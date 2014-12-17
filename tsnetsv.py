@@ -26,6 +26,9 @@ def _argparser():
             help='output (default: stdout)')
     argparser.add_argument('-w', '--whitespace-cells', action='store_true',
             help='input cells separated by whitespace (default: tabs)')
+    argparser.add_argument('-n', '--no-tokens', action='store_true',
+            help='consider all cells to be numerical (default: false)')
+
     return argparser
 
 def main(args):
@@ -42,7 +45,10 @@ def main(args):
     for line_num, line in enumerate((l.rstrip('\n') for l in argp.input),
             start=1):
         try:
-            tok, vals_str = line.split(cell_sep, 1)
+            if not argp.no_tokens:
+                tok, vals_str = line.split(cell_sep, 1)
+            else:
+                vals_str = line
             tok_vals = [float(v) for v in vals_str.split(cell_sep)]
         except ValueError:
             print >> stderr, ('ERROR: Failed to read input line %s "%s"'
@@ -51,7 +57,10 @@ def main(args):
                     'spaces instead of tabs? If so, try the -w flag')
             return -1
 
-        toks.append(tok)
+        if not argp.no_tokens:
+            toks.append(tok)
+        else:
+            toks.append(line_num)
         toks_vals.append(tok_vals)
     toks_vals_array = array(toks_vals)
     del toks_vals
